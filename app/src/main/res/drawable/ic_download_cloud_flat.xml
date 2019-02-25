@@ -1,0 +1,6 @@
+<vector android:height="150dp" android:viewportHeight="64"
+    android:viewportWidth="64" android:width="150dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#465e8d" android:name="background" android:pathData="m32 0c17.68 0 32 14.32 32 32c0 17.68 -14.32 32 -32 32c-17.68 0 -32 -14.32 -32 -32c0 -17.68 14.32 -32 32 -32z"/>
+    <path android:fillColor="#fff" android:name="cloud" android:pathData="m45.3 26.77c4.23 0 7.7 3.42 7.7 7.61c0 4.19 -3.47 7.61 -7.7 7.61h-26.6c-4.23 0 -7.7 -3.43 -7.7 -7.61c0 -3.73 2.74 -6.84 6.33 -7.49c-0.01 -0.16 -0.03 -0.32 -0.03 -0.48c0 -3.25 2.66 -5.88 5.95 -5.88c0.7 0 1.35 0.12 1.97 0.34c1.61 -3.47 5.13 -5.88 9.23 -5.88c5.6 0 10.15 4.5 10.15 10.04c0 0.59 -0.06 1.17 -0.16 1.73h0.86z"/>
+    <path android:fillColor="#45df99" android:name="arrow" android:pathData="m32 55 -8 -8.67h4v-10.67h8v10.67h4l-8 8.67z"/>
+</vector>

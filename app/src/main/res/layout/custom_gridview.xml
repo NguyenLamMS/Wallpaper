@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2px"
+    android:id="@+id/relativeLayoutItem"
+    android:background="#000">
+            <ImageView
+                android:id="@+id/images"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:scaleType="centerCrop" />
+                    <LinearLayout
+                        android:id="@+id/containerGrid"
+                        android:layout_below="@+id/images"
+                        android:background="#2B9463"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+                        <LinearLayout
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <TextView
+                            android:id="@+id/txtNameImage"
+                            android:textColor="#fff"
+                            android:text="I Love You"
+                            android:layout_marginLeft="10dp"
+                            android:layout_height="20dp"
+                            android:layout_width="match_parent"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginRight="5dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+                            <ImageView
+                                android:layout_weight="1"
+                                android:background="@drawable/icon_heart_white"
+                                android:layout_width="7dp"
+                                android:layout_height="17dp" />
+                            <TextView
+                                android:id="@+id/totalLike"
+                                android:paddingLeft="5dp"
+                                android:layout_weight="1"
+                                android:text="20"
+                                android:textSize="14dp"
+                                android:textColor="#fff"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <ImageView
+                                android:layout_weight="1"
+                                android:background="@drawable/download1"
+                                android:layout_width="7dp"
+                                android:layout_height="18dp" />
+                            <TextView
+                                android:id="@+id/totalDownload"
+                                android:paddingLeft="5dp"
+                                android:layout_weight="1"
+                                android:text="20"
+                                android:textSize="14dp"
+                                android:textColor="#fff"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </LinearLayout>
+</RelativeLayout>

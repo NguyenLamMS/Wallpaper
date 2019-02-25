@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/btnHeart"
+        android:icon="@drawable/icon_heart_white"
+        android:title="Heart"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/btnDowload"
+        android:icon="@drawable/ic_file_download_black_24dp"
+        android:title="Dowload"
+        app:showAsAction="ifRoom"/>
+
+</menu>
