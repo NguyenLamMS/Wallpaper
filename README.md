@@ -32,7 +32,8 @@
      <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-25-22-27-25.png" alt="">
 </p>
 <h2> Wallpaper </h2>
-App using api of https://www.pexels.com/ </br>
+App using api of </br>
+https://www.pexels.com/ </br>
 Some libraries are used</br>
 https://github.com/appwise-labs/NoInternetDialog</br>
 https://github.com/memotiur/AppIntroDemo</br>
