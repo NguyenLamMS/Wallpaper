@@ -30,6 +30,12 @@
     <img   width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Capture%2B_2019-02-25-21-18-34.png" alt="">
     <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-25-21-18-14.png" alt="">
      <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-25-22-27-25.png" alt="">
+     <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-28-21-03-05.png" alt="">
+</p>
+<h1>Setting</h1>
+<p>
+    <img   width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Capture%2B_2019-02-28-21-02-41.png" alt="">
+    <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-28-21-03-25.png" alt="">
 </p>
 <h2> Wallpaper </h2>
 App using api of </br>
