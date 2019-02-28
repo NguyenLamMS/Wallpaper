@@ -25,8 +25,15 @@
     <img   width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Capture%2B_2019-02-25-21-20-23.png" alt="">
     <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Capture%2B_2019-02-25-21-17-59.png" alt="">
 </p>
-<h1>Notification no internet</h1>
+<h1>Notification no internet and Download</h1>
 <p>
     <img   width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Capture%2B_2019-02-25-21-18-34.png" alt="">
     <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-25-21-18-14.png" alt="">
+     <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-25-22-27-25.png" alt="">
 </p>
+<h2> Wallpaper </h2>
+App using api of </br>
+https://www.pexels.com/ </br>
+Some libraries are used</br>
+https://github.com/appwise-labs/NoInternetDialog</br>
+https://github.com/memotiur/AppIntroDemo</br>
