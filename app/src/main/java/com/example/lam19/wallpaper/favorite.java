@@ -24,10 +24,7 @@ import retrofit2.Response;
 
 public class favorite extends AppCompatActivity {
     private ApdapterFavorite ApFavorite;
-    ArrayList<String> listImageURLsMedium = new ArrayList<>();
-    ArrayList<String> listImageURLsOriginal = new ArrayList<>();
-    ArrayList<Integer> listIdImage = new ArrayList<>();
-    private  ArrayList<String> listNameImge = new ArrayList<>();
+    ArrayList<arrUrlImage> arrListImage = new ArrayList<>();
     ProgressBar progressBar;
     SwipeRefreshLayout swipeRefreshLayout;
     Internet internet;
@@ -54,7 +51,7 @@ public class favorite extends AppCompatActivity {
         }
         RecyclerView rc = findViewById(R.id.recyclerViewFavorite);
         RecyclerView.LayoutManager layout = new GridLayoutManager(this,2);
-        ApFavorite = new ApdapterFavorite(this,listImageURLsMedium,listIdImage,listNameImge,listImageURLsOriginal);
+        ApFavorite = new ApdapterFavorite(this,arrListImage);
         rc.setLayoutManager(layout);
         rc.setAdapter(ApFavorite);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,10 +60,7 @@ public class favorite extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if(internet.isNetworkAvailable(favorite.this)){
-                    listIdImage.clear();
-                    listImageURLsMedium.clear();
-                    listImageURLsOriginal.clear();
-                    listNameImge.clear();
+                    arrListImage.clear();
                     getFavorite();
                     ApFavorite.notifyDataSetChanged();
                     FrameLayout frameLayout = findViewById(R.id.frameLayoutFavorite);
@@ -83,7 +77,6 @@ public class favorite extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if(noInternetDialog != null){
-            System.out.println("ahihi");
             System.out.println(noInternetDialog);
             try {
                 noInternetDialog.onDestroy();
@@ -111,22 +104,18 @@ public class favorite extends AppCompatActivity {
         Integer id =sp1.getInt("id", -1);
         MyApi.getRetrofit().create(MyApi.ApiGetFavorite.class)
                 .GetFavorite(id)
-                .enqueue(new Callback<ArrListFavorite>() {
+                .enqueue(new Callback<resulltFeatured>() {
                     @Override
-                    public void onResponse(Call<ArrListFavorite> call, Response<ArrListFavorite> response) {
+                    public void onResponse(Call<resulltFeatured> call, Response<resulltFeatured> response) {
                        if(response.isSuccessful()){
-                           listIdImage.addAll(response.body().getListFavorite());
-                           listImageURLsMedium.addAll(response.body().getListImageMedium());
-                           listNameImge.addAll(response.body().getListName());
-                           listImageURLsOriginal.addAll(response.body().getListImageOriginal());
+                           arrListImage.addAll(response.body().getPhotto());
                            ApFavorite.notifyDataSetChanged();
                            progressBar.setVisibility(View.GONE);
                            swipeRefreshLayout.setRefreshing(false);
                        }
                     }
-
                     @Override
-                    public void onFailure(Call<ArrListFavorite> call, Throwable t) {
+                    public void onFailure(Call<resulltFeatured> call, Throwable t) {
                         progressBar.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
                         FrameLayout frameLayout = findViewById(R.id.frameLayoutFavorite);
@@ -135,6 +124,7 @@ public class favorite extends AppCompatActivity {
                     }
                 });
     }
+    // get info image by id
     public void Getdata(Integer id){
         System.out.println("id : ");
         System.out.println(id);
@@ -144,24 +134,10 @@ public class favorite extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<arrUrlImage> call, Response<arrUrlImage> response) {
                         if(response.isSuccessful()){
-//                            if(isClean == true){
-//                                listImageURLsOriginal.clear();
-//                                listImageURLsMedium.clear();
-//                                listIdImage.clear();
-
-//                            }
-//                            for (arrUrlImage  a: apiUrlImage) {
-                                listImageURLsMedium.add(response.body().src.medium);
-                                listImageURLsOriginal.add(response.body().src.original);
-                                listIdImage.add(response.body().id);
-                                listNameImge.add(response.body().namePhoto);
-                                System.out.println(listImageURLsMedium);
-//                            }
 //                            customAdapter.notifyDataSetChanged();
 //                            swpiSwipeRefreshLayout.setRefreshing(false);
 
                         }else{
-                            System.out.println(listImageURLsOriginal.size());
                             Log.e(" Error ",response.message());
                         }
                         ApFavorite.notifyDataSetChanged();

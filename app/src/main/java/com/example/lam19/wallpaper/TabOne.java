@@ -35,12 +35,8 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class TabOne extends android.support.v4.app.Fragment {
-    private GridView myGridView;
     private ApdapterFavorite ApdapterHome;
-    ArrayList<String> listImageURLsMedium = new ArrayList<>();
-    ArrayList<String> listImageURLsOriginal = new ArrayList<>();
     ArrayList<Integer> listIdImage = new ArrayList<Integer>();
-    private  ArrayList<String> listNameImge = new ArrayList<>();
     RecyclerView rc;
     SwipeRefreshLayout swpiSwipeRefreshLayout;
     Boolean userScroll = false;
@@ -52,7 +48,6 @@ public class TabOne extends android.support.v4.app.Fragment {
     View layout;
     FrameLayout frameLayout;
     private  ArrayList<arrUrlImage> apiUrlImage = new ArrayList<>();
-
     public ArrayList<arrUrlImage> getApiUrlImage() {
         return apiUrlImage;
     }
@@ -74,13 +69,6 @@ public class TabOne extends android.support.v4.app.Fragment {
         progressBarCenter = layout.findViewById(R.id.progressBarHomeCenter);
         progressBarCenter.setVisibility(View.VISIBLE);
         progressBar = layout.findViewById(R.id.progressBarHome);
-        rc = layout.findViewById(R.id.recyclerViewHome);
-        RecyclerView.LayoutManager layoutRC = new GridLayoutManager(getActivity(),2);
-        ApdapterHome = new ApdapterFavorite(getActivity(),listImageURLsMedium,listIdImage,listNameImge,listImageURLsOriginal);
-        rc.setLayoutManager(layoutRC);
-        rc.setAdapter(ApdapterHome);
-        initScrollListener();
-        swpiSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeReload);
         //check internet
         if(internet.isNetworkAvailable(getActivity())){
             resulUrlImageTabOne(16,1,true);
@@ -90,6 +78,14 @@ public class TabOne extends android.support.v4.app.Fragment {
             frameLayout.setBackground(drawable);
             swpiSwipeRefreshLayout.setRefreshing(false);
         }
+
+        rc = layout.findViewById(R.id.recyclerViewHome);
+        RecyclerView.LayoutManager layoutRC = new GridLayoutManager(getActivity(),2);
+        ApdapterHome = new ApdapterFavorite(getActivity(),apiUrlImage);
+        rc.setLayoutManager(layoutRC);
+        rc.setAdapter(ApdapterHome);
+        initScrollListener();
+        swpiSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeReload);
         //func reload data using swipe down
         swpiSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -121,7 +117,7 @@ public class TabOne extends android.support.v4.app.Fragment {
                 super.onScrolled(recyclerView, dx, dy);
                 GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
                 if(!userScroll){
-                    if(gridLayoutManager != null && gridLayoutManager.findLastCompletelyVisibleItemPosition() == listImageURLsMedium.size() -1){
+                    if(gridLayoutManager != null && gridLayoutManager.findLastCompletelyVisibleItemPosition() == apiUrlImage.size() -1){
                         userScroll = true;
                         loadMode();
                     }
@@ -147,21 +143,12 @@ public class TabOne extends android.support.v4.app.Fragment {
                 .enqueue(new Callback<resulltFeatured>() {
                     @Override
                     public void onResponse(Call<resulltFeatured> call, Response<resulltFeatured> response) {
-                        apiUrlImage.clear();
                         if(response.isSuccessful()){
                            if(isClean == true){
-                               listImageURLsOriginal.clear();
-                               listImageURLsMedium.clear();
-                               listIdImage.clear();
-                               listNameImge.clear();
+                               apiUrlImage.clear();
                            }
                             apiUrlImage.addAll(response.body().getPhotto());
-                            for (arrUrlImage  a: apiUrlImage) {
-                                listImageURLsMedium.add(a.src.medium);
-                                listImageURLsOriginal.add(a.src.original);
-                                listIdImage.add(a.id);
-                                listNameImge.add(a.namePhoto);
-                            }
+
                             ApdapterHome.notifyDataSetChanged();
                             swpiSwipeRefreshLayout.setRefreshing(false);
                             progressBar.setVisibility(View.GONE);

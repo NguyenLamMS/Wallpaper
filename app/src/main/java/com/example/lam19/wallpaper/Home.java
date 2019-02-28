@@ -1,18 +1,23 @@
 package com.example.lam19.wallpaper;
 
+import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 
 import android.graphics.Color;
+
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+
 import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -23,6 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
 
 import android.widget.SearchView;
 
@@ -35,6 +41,7 @@ import am.appwise.components.ni.NoInternetDialog;
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
     NoInternetDialog noInternetDialog;
+    SharedPreferences sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +53,8 @@ public class Home extends AppCompatActivity
         viewpage.setAdapter(new MyApdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewpage);
+        sp = getSharedPreferences("WallpaperAuto", MODE_PRIVATE);
         noInternetDialog = new NoInternetDialog.Builder(this).setButtonColor(Color.parseColor("#fe3f80")).setDialogRadius((float) 50).setCancelable(true).build();
-
 //
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -73,12 +80,12 @@ public class Home extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.userEmail);
         navUsername.setText(email);
+        checkAutoUpdate();
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(noInternetDialog != null){
-            System.out.println("ahihi");
             System.out.println(noInternetDialog);
             try {
                 noInternetDialog.onDestroy();
@@ -131,10 +138,13 @@ public class Home extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this,Setting.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -178,7 +188,9 @@ public class Home extends AppCompatActivity
             sendIntent.setType("text/plain");
             this.startActivity(sendIntent);
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_setting) {
+            Intent intent = new Intent(this,Setting.class);
+            startActivity(intent);
 
         }
 
@@ -186,7 +198,35 @@ public class Home extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void checkInternet(){
 
+
+    public void start() {
+        if (isMyServiceRunning(ServiceWallpaper.class)) return;
+        Intent startIntent = new Intent(this, ServiceWallpaper.class);
+        startIntent.setAction("start");
+        startService(startIntent);
     }
+    public void stop() {
+        if (!isMyServiceRunning(ServiceWallpaper.class)) return;
+        Intent stopIntent = new Intent(this, ServiceWallpaper.class);
+        stopIntent.setAction("stop");
+        startService(stopIntent);
+    }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void checkAutoUpdate(){
+        if(sp.getInt("status",0) == 1){
+            start();
+        }else{
+            stop();
+        }
+    }
+
 }

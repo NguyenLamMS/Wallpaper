@@ -95,7 +95,6 @@ public class Login extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if(noInternetDialog != null){
-            System.out.println("ahihi");
             System.out.println(noInternetDialog);
             try {
                 noInternetDialog.onDestroy();

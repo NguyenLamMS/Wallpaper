@@ -48,12 +48,34 @@ public class arrUrlImage {
     public class srcImage{
         @SerializedName("original")
         String original;
+        @SerializedName("large2x")
+        String large;
+        @SerializedName("portrait")
+        String portrait;
         @SerializedName("medium")
         String medium;
 
-        public srcImage(String original, String medium) {
+        public srcImage(String original, String large, String portrait, String medium) {
             this.original = original;
+            this.large = large;
+            this.portrait = portrait;
             this.medium = medium;
+        }
+
+        public String getPortrait() {
+            return portrait;
+        }
+
+        public void setPortrait(String portrait) {
+            this.portrait = portrait;
+        }
+
+        public String getLarge() {
+            return large;
+        }
+
+        public void setLarge(String large) {
+            this.large = large;
         }
 
         public String getOriginal() {

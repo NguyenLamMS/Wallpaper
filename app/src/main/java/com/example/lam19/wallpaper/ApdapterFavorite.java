@@ -22,19 +22,13 @@ import java.util.Random;
 
 public class ApdapterFavorite extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
-    private ArrayList<String> listData = new ArrayList<>();
-    private  ArrayList<Integer> listId = new ArrayList<>();
-    private ArrayList<String> listName = new ArrayList<>();
-    private ArrayList<String> listImageURLsOriginal = new ArrayList<>();
+    private ArrayList<arrUrlImage> arrListImage = new ArrayList<>();
     Integer[] totalLike = {20,30,40,50};
     Integer[] totalDownload = {50,33,34,67};
     Integer countTotal = 0;
-    public ApdapterFavorite(Context context, ArrayList<String> data, ArrayList<Integer> id,ArrayList<String> name,ArrayList<String> original) {
+    public ApdapterFavorite(Context context,ArrayList<arrUrlImage> arrListImage) {
         this.context = context;
-        this.listData = data;
-        this.listId = id;
-        this.listName = name;
-        this.listImageURLsOriginal = original;
+        this.arrListImage = arrListImage;
     }
 
     @NonNull
@@ -55,7 +49,7 @@ public class ApdapterFavorite extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
     @Override
     public int getItemCount() {
-        return listName.size();
+        return arrListImage.size();
     }
 
     class ViewHoler extends RecyclerView.ViewHolder{
@@ -84,10 +78,10 @@ public class ApdapterFavorite extends RecyclerView.Adapter<RecyclerView.ViewHold
         }else{
             countTotal += 1;
         }
-        viewHoler.txtName.setText(listName.get(i));
+        viewHoler.txtName.setText(arrListImage.get(i).getNamePhoto());
         viewHoler.linearLayout.setBackgroundColor(getRandomColor());
         Glide.with(context)
-                .load(listData.get(i))
+                .load(arrListImage.get(i).src.medium)
                 .apply(new RequestOptions()
                         .placeholder(R.mipmap.loading)
                         .centerCrop()
@@ -99,10 +93,12 @@ public class ApdapterFavorite extends RecyclerView.Adapter<RecyclerView.ViewHold
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(),ItemGridView.class);
-                intent.putExtra("image",listImageURLsOriginal.get(i));
-                intent.putExtra("image_medium",listData.get(i));
-                intent.putExtra("id_image",listId.get(i));
-                intent.putExtra("name_image", listName.get(i));
+                intent.putExtra("image_original",arrListImage.get(i).src.original);
+                intent.putExtra("image_large",arrListImage.get(i).src.large);
+                intent.putExtra("image_portrait",arrListImage.get(i).src.portrait);
+                intent.putExtra("image_medium",arrListImage.get(i).src.medium);
+                intent.putExtra("id_image",arrListImage.get(i).getId());
+                intent.putExtra("name_image", arrListImage.get(i).getNamePhoto());
                 v.getContext().startActivity(intent);
             }
         });

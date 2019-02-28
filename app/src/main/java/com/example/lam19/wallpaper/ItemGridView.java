@@ -3,6 +3,8 @@ package com.example.lam19.wallpaper;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -14,7 +16,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,13 +26,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.jsibbold.zoomage.ZoomageView;
 import java.io.BufferedInputStream;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,17 +53,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ItemGridView extends AppCompatActivity {
-    ImageView imageView;
     Button btnSetImage;
     Boolean isHidden = false;
     Boolean isHeart = false;
     MenuItem btnHearts;
     ProgressBar progressBarLoad;
-    Boolean setWallpaper = true;
-    Boolean downloadWallpaper = true;
     NoInternetDialog noInternetDialog;
     Intent intent;
-    Bitmap MyBitmap;
+    Bitmap imageBitmapMedium;
+    ZoomageView zoomImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,65 +70,44 @@ public class ItemGridView extends AppCompatActivity {
         getWindow().setNavigationBarColor(ContextCompat.getColor(getApplicationContext(),R.color.nav_login));
         progressBarLoad = findViewById(R.id.progressBarItemGrid);
         progressBarLoad.setVisibility(View.VISIBLE);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        zoomImage = findViewById(R.id.imageView);
         btnSetImage = (Button) findViewById(R.id.btnSetImage);
         //check item đã có trong favarite hay chưa
         checkFavorite();
 
         noInternetDialog = new NoInternetDialog.Builder(this).setButtonColor(Color.parseColor("#fe3f80")).setDialogRadius((float) 50).setCancelable(true).build();
-
         intent = getIntent();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     progressBarLoad.setVisibility(View.VISIBLE);
-                    MyBitmap = Glide.
+                    imageBitmapMedium = Glide.
                             with(ItemGridView.this).
                             asBitmap().
-                            load(intent.getStringExtra("image")).
+                            load(intent.getStringExtra("image_portrait")).
                             into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL).
                             get();
                    runOnUiThread(new Runnable() {
                        @Override
                        public void run() {
-                           imageView.setImageBitmap(MyBitmap);
+                           zoomImage.setImageBitmap(imageBitmapMedium);
                            progressBarLoad.setVisibility(View.GONE);
                        }
                    });
                 } catch (ExecutionException e) {
                     e.printStackTrace();
+                    Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
                 }
             }
         }).start();
         btnSetImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(setWallpaper){
-                    progressBarLoad.setVisibility(View.VISIBLE);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    WallpaperManager.getInstance(getApplicationContext()).setBitmap(MyBitmap);
-                                    setWallpaper = false;
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            progressBarLoad.setVisibility(View.GONE);
-                                            Toast.makeText(ItemGridView.this, "Wallpaper update", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }).start();
-                }else{
-                    Toast.makeText(ItemGridView.this, "Wallpaper has been set", Toast.LENGTH_LONG).show();
-                }
+                showMyDialog(false);
             }
         });
         //create button back
@@ -135,31 +115,31 @@ public class ItemGridView extends AppCompatActivity {
         //tranparent actionBar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isHidden == true) {
-                    ActionBar actionBar = getSupportActionBar();
-                    actionBar.hide();
-                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                    isHidden = false;
-                } else {
-                    ActionBar actionBar = getSupportActionBar();
-                    actionBar.show();
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                    isHidden = true;
-                }
-            }
-        });
 
+        // Click hidden actionBar and statusBar and navBar
+//        zoomImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (isHidden == true) {
+//                    ActionBar actionBar = getSupportActionBar();
+//                    actionBar.hide();
+//                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//                    isHidden = false;
+//                } else {
+//                    ActionBar actionBar = getSupportActionBar();
+//                    actionBar.show();
+//                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//                    isHidden = true;
+//                }
+//            }
+//        });
+        setTitle(intent.getStringExtra("name_image"));
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(noInternetDialog != null){
-            System.out.println("ahihi");
-            System.out.println(noInternetDialog);
             try {
                 noInternetDialog.onDestroy();
                 noInternetDialog = null;
@@ -168,19 +148,77 @@ public class ItemGridView extends AppCompatActivity {
             }
         }
     }
-    public void dowloadImageAndSave() {
-        Intent intent = getIntent();
-        String url = intent.getStringExtra("image");
+    public void showMyDialog(final Boolean isDowload){
+        final String[] fonts = {"Original","Large","Portrait"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(ItemGridView.this);
+        builder.setTitle("Choose image quality");
+        builder.setItems(fonts, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if ("Original".equals(fonts[which])){
+                        if(isDowload){
+                            dowloadImageAndSave(intent.getStringExtra("image_original"));
+                        }else{
+                            setWallpaper(intent.getStringExtra("image_original"));
+                        }
+                }
+                else if ("Large".equals(fonts[which])){
+                        if(isDowload){
+                            dowloadImageAndSave(intent.getStringExtra("image_large"));
+                        }else{
+                            setWallpaper(intent.getStringExtra("image_large"));
+                        }
+                }
+                else if ("Portrait".equals(fonts[which])){
+                        if(isDowload){
+                            dowloadImageAndSave(intent.getStringExtra("image_portrait"));
+                        }else{
+                            setWallpaper(intent.getStringExtra("image_portrait"));
+                        }
+                }
+            }
+        });
+        builder.show();
+    }
 
+    public void setWallpaper( final String url){
+        progressBarLoad.setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Bitmap bitmap = Glide.with(ItemGridView.this).asBitmap().load(url).into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL).get();
+                    WallpaperManager.getInstance(getApplicationContext()).setBitmap(bitmap);
+                } catch (IOException e) {
+                    Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBarLoad.setVisibility(View.GONE);
+                        Toast.makeText(ItemGridView.this, "Wallpaper update", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void dowloadImageAndSave(String url) {
         if (checkPermission()) {
             new DownloadFile().execute(url);
-            downloadWallpaper = false;
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(ItemGridView.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 Toast.makeText(ItemGridView.this, "Write External Storage permission allows us to do store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
             } else {
                 ActivityCompat.requestPermissions(ItemGridView.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                dowloadImageAndSave();
+                dowloadImageAndSave(url);
             }
         }
     }
@@ -243,11 +281,7 @@ public class ItemGridView extends AppCompatActivity {
             onBackPressed();
         }
         if (item.getItemId() == R.id.btnDowload) {
-            if(downloadWallpaper == true){
-                dowloadImageAndSave();
-            }
-            else
-                Toast.makeText(ItemGridView.this, "Wallpaper has been download", Toast.LENGTH_LONG).show();
+            showMyDialog(true);
         }
         if (item.getItemId() == R.id.btnHeart) {
             if (isHeart == false) {
@@ -272,9 +306,11 @@ public class ItemGridView extends AppCompatActivity {
         Integer id_user = sp.getInt("id", -1);
         String image_medium = intent.getStringExtra("image_medium");
         String name_image = intent.getStringExtra("name_image");
-        String image_original = intent.getStringExtra("image");
+        String image_original = intent.getStringExtra("image_original");
+        String image_large = intent.getStringExtra("image_large");
+        String image_portrait = intent.getStringExtra("image_portrait");
         MyApi.getRetrofit().create(MyApi.ApiFavorite.class)
-                .Favorite(id_image, id_user,image_medium,name_image,image_original)
+                .Favorite(id_image, id_user,image_medium,name_image,image_original,image_large,image_portrait)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -313,7 +349,6 @@ public class ItemGridView extends AppCompatActivity {
                     }
                 });
     }
-
     public void checkFavorite() {
         Intent intent = getIntent();
         Integer id_image = intent.getIntExtra("id_image", 0);
@@ -350,7 +385,6 @@ public class ItemGridView extends AppCompatActivity {
     }
 
     private class DownloadFile extends AsyncTask<String, String, String> {
-
         private ProgressDialog progressDialog;
         @Override
         protected void onPreExecute() {
@@ -368,7 +402,8 @@ public class ItemGridView extends AppCompatActivity {
         protected String doInBackground(String... f_url) {
             int count;
             try {
-                saveImage(MyBitmap);
+                Bitmap bitmap = Glide.with(ItemGridView.this).asBitmap().load(f_url[0]).into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL).get();
+                saveImage(bitmap);
                 URL url = new URL(f_url[0]);
                 URLConnection connection = url.openConnection();
                 connection.connect();
@@ -413,5 +448,6 @@ public class ItemGridView extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     message, Toast.LENGTH_LONG).show();
         }
+
     }
 }

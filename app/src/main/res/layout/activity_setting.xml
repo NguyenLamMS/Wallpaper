@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/containerSetting"
+    android:background="@color/black"
+    tools:context=".Setting">
+      <LinearLayout
+          android:layout_marginLeft="20dp"
+          android:layout_marginTop="10dp"
+          android:id="@+id/cell1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+          <ImageView
+              android:layout_weight="1"
+              android:id="@+id/imageCell1"
+              android:src="@drawable/wallpaper_auto"
+              android:layout_width="50dp"
+              android:layout_height="50dp" />
+            <RelativeLayout
+                android:layout_marginLeft="20dp"
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textColor="@color/white"
+                    android:id="@+id/txtCell1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Set wallpaper "
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:id="@+id/txtAfterCell1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtCell1"
+                    android:text="Set wallpaper automatically over time"
+                    android:textSize="15dp" />
+                <CheckBox
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignRight="@+id/txtAfterCell1"
+                    android:gravity="center_vertical"
+                    android:id="@+id/cbTheme"
+                    android:scaleX="1"
+                    android:scaleY="1"
+                    android:buttonTint="@color/primaryColorBlue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+      </LinearLayout>
+    <View
+        android:layout_marginTop="10dp"
+        android:id="@+id/viewLineCell1"
+        android:layout_below="@+id/cell1"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorWhite" />
+    <LinearLayout
+        android:layout_below="@id/viewLineCell1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/cell2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/imageCell2"
+            android:src="@drawable/time"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+        <RelativeLayout
+            android:layout_marginLeft="20dp"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtCell2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="Time update wallpaper"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtCell2"
+                android:text="24 hours"
+                android:id="@+id/txtAfterCell2"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+        </RelativeLayout>
+    </LinearLayout>
+    <View
+        android:layout_marginTop="10dp"
+        android:id="@+id/viewLineCell2"
+        android:layout_below="@+id/cell2"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/white" />
+    <LinearLayout
+        android:layout_below="@+id/viewLineCell2"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/cell3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_weight="1"
+            android:id="@+id/imageCell3"
+            android:src="@drawable/select_favorite"
+            android:layout_width="55dp"
+            android:layout_height="55dp"/>
+        <RelativeLayout
+            android:layout_marginLeft="20dp"
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtCell3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="Wallpaper supplies"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtCell3"
+                android:text="Favorite"
+                android:textColor="@color/white"
+                android:id="@+id/txtAfterCell3"
+                android:textSize="15dp" />
+        </RelativeLayout>
+    </LinearLayout>
+    <View
+        android:layout_marginTop="10dp"
+        android:id="@+id/viewLineCell3"
+        android:layout_below="@+id/cell3"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/white" />
+</RelativeLayout>

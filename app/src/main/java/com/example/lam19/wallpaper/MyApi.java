@@ -3,7 +3,10 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public class MyApi {
@@ -27,8 +30,9 @@ public class MyApi {
         public Call<dataApiLogin> Login(@Query("email") String email, @Query("password") String password);
     }
     public interface ApiFavorite{
-        @GET("/addfavorite.php?")
-        public Call<ResponseBody> Favorite(@Query("id_image") Integer id_image,@Query("id_user") Integer id_user, @Query("image_medium") String image_medium, @Query("name_image") String name_image, @Query("image_original") String image_original);
+        @POST("/addfavorite.php?")
+        @FormUrlEncoded
+        public Call<ResponseBody> Favorite(@Field("id_image") Integer id_image, @Field("id_user") Integer id_user, @Field("image_medium") String image_medium, @Field("name_image") String name_image, @Field("image_original") String image_original, @Field("image_large") String image_large, @Field("image_portrait") String image_portrait);
     }
     public interface ApiRemoveFavorite{
         @GET("/removefavorite.php?")
@@ -40,7 +44,7 @@ public class MyApi {
     }
     public interface ApiGetFavorite{
         @GET("/getlistfavorite.php?")
-        public Call<ArrListFavorite> GetFavorite(@Query("id_user") Integer id_user);
+        public Call<resulltFeatured> GetFavorite(@Query("id_user") Integer id_user);
     }
 }
 

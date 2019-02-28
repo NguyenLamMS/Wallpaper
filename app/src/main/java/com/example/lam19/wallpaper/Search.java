@@ -39,10 +39,8 @@ import retrofit2.Response;
 
 public class Search<onCreateOptionsMenu> extends AppCompatActivity {
     private GridView myGridView;
-    ArrayList<String> listImageURLsMedium = new ArrayList<>();
     ArrayList<String> listImageURLsOriginal = new ArrayList<>();
     ArrayList<Integer> listId = new ArrayList<>();
-    ArrayList<String> listName = new ArrayList<>();
     private  ArrayList<arrUrlImage> apiUrlImage = new ArrayList<>();
     Integer[] totalLike = {20,30,40,50,34,56};
     Integer[] totalDownload = {50,33,34,67,76,85};
@@ -61,15 +59,19 @@ public class Search<onCreateOptionsMenu> extends AppCompatActivity {
         getWindow().setNavigationBarColor(ContextCompat.getColor(getApplicationContext(),R.color.colorActionBar));
         myGridView = (GridView) findViewById(R.id.gridviewSearch);
         progressBar = (ProgressBar)  findViewById(R.id.progressBarSearch);
-        customAdapter = new CustomAdapterSearch(Search.this,R.layout.custom_gridview,listImageURLsMedium);
+        customAdapter = new CustomAdapterSearch(Search.this,R.layout.custom_gridview,apiUrlImage);
         myGridView.setAdapter(customAdapter);
         noInternetDialog = new NoInternetDialog.Builder(this).setButtonColor(Color.parseColor("#fe3f80")).setDialogRadius((float) 50).setCancelable(true).build();
         myGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(Search.this,ItemGridView.class);
-                intent.putExtra("image",listImageURLsOriginal.get(position));
-                intent.putExtra("id_image",listId.get(position));
+                intent.putExtra("image_original",apiUrlImage.get(position).src.original);
+                intent.putExtra("image_large",apiUrlImage.get(position).src.large);
+                intent.putExtra("image_portrait",apiUrlImage.get(position).src.portrait);
+                intent.putExtra("image_medium",apiUrlImage.get(position).src.medium);
+                intent.putExtra("id_image",apiUrlImage.get(position).getId());
+                intent.putExtra("name_image", apiUrlImage.get(position).getNamePhoto());
                 startActivity(intent);
             }
         });
@@ -77,7 +79,7 @@ public class Search<onCreateOptionsMenu> extends AppCompatActivity {
         internet = new Internet();
         if(internet.isNetworkAvailable(this)){
             progressBar.setVisibility(View.VISIBLE);
-            resulUrlImageSearch(per_page,page,true);
+            resulUrlImageSearch(per_page,page);
         }else{
             progressBar.setVisibility(View.GONE);
             FrameLayout frameLayout = findViewById(R.id.frameLayoutSearch);
@@ -95,7 +97,7 @@ public class Search<onCreateOptionsMenu> extends AppCompatActivity {
                 if(userScroll && firstVisibleItem + visibleItemCount == totalItemCount){
                     userScroll = false;
                     page += 1;
-                    resulUrlImageSearch(per_page,page,false);
+                    resulUrlImageSearch(per_page,page);
                     System.out.println("page :" + page);
                 }
             }
@@ -118,7 +120,7 @@ public class Search<onCreateOptionsMenu> extends AppCompatActivity {
             }
         }
     }
-    public void resulUrlImageSearch(Integer per_page, Integer page, final Boolean isClean){
+    public void resulUrlImageSearch(Integer per_page, Integer page){
         Intent intent = getIntent();
         Api.getRetrofit().create(Api.APISearch.class)
                 .searchImageQuery("563492ad6f91700001000001bd5e05fa13044b96bb29ebd4a8a4c55f",intent.getStringExtra("valueSearch") ,per_page,page)
@@ -126,22 +128,9 @@ public class Search<onCreateOptionsMenu> extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<resulltFeatured> call, Response<resulltFeatured> response) {
                         if(response.isSuccessful()){
-                                apiUrlImage.clear();
-                                if(isClean == true){
-                                    listImageURLsOriginal.clear();
-                                    listImageURLsMedium.clear();
-                                    listId.clear();
-                                    listName.clear();
-                                }
                             apiUrlImage.addAll(response.body().getPhotto());
-                            for (arrUrlImage  a: apiUrlImage) {
-                                listImageURLsMedium.add(a.src.medium);
-                                listImageURLsOriginal.add(a.src.original);
-                                listId.add(a.id);
-                                listName.add(a.namePhoto);
-                            }
                             progressBar.setVisibility(View.GONE);
-                            if(listId.size() == 0){
+                            if(apiUrlImage.size() == 0){
                                 FrameLayout frameLayout = findViewById(R.id.frameLayoutSearch);
                                 Drawable drawable = getResources().getDrawable(R.mipmap.no_result);
                                 frameLayout.setBackground(drawable);
@@ -195,17 +184,16 @@ public class Search<onCreateOptionsMenu> extends AppCompatActivity {
     private class CustomAdapterSearch extends BaseAdapter {
         private Context context;
         private int layout;
-        private List<String> listImageURLs;
-
-        public CustomAdapterSearch(Context context, int layout, List<String> images) {
+        private ArrayList<arrUrlImage> arrListimage = new ArrayList<>();
+        public CustomAdapterSearch(Context context, int layout, ArrayList<arrUrlImage> arrListImage) {
             this.context = context;
             this.layout = layout;
-            this.listImageURLs = images;
+            this.arrListimage = arrListImage;
         }
 
         @Override
         public int getCount() {
-            return listImageURLs.size();
+            return arrListimage.size();
         }
 
         @Override
@@ -238,14 +226,14 @@ public class Search<onCreateOptionsMenu> extends AppCompatActivity {
                 countTotal += 1;
             }
             viewHolder.name = convertView.findViewById(R.id.txtNameImage);
-            viewHolder.name.setText(listName.get(position));
+            viewHolder.name.setText(arrListimage.get(position).getNamePhoto());
             viewHolder.image = (ImageView) convertView.findViewById(R.id.images);
             viewHolder.linearLayout = (LinearLayout) convertView.findViewById(R.id.containerGrid);
             convertView.setTag(viewHolder);
             viewHolder.linearLayout.setBackgroundColor(getRandomColor());
             //load image
             Glide.with(context)
-                    .load(listImageURLs.get(position))
+                    .load(arrListimage.get(position).src.medium)
                     .apply(new RequestOptions()
                             .placeholder(R.mipmap.loading)
                             .centerCrop()
