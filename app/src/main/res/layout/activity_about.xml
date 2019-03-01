@@ -13,12 +13,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
+            <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/imageTop"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:scaleType="center"
-                android:src="@mipmap/background2" />
+                android:scaleType="fitXY"
+                android:src="@mipmap/about" />
 
             <ImageView
                 android:id="@+id/imageAvatar"

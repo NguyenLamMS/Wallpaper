@@ -21,7 +21,8 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 
 import android.widget.ProgressBar;
-
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -76,7 +77,6 @@ public class TabOne extends android.support.v4.app.Fragment {
             progressBarCenter.setVisibility(View.GONE);
             Drawable drawable = getResources().getDrawable(R.mipmap.no_internet);
             frameLayout.setBackground(drawable);
-            swpiSwipeRefreshLayout.setRefreshing(false);
         }
 
         rc = layout.findViewById(R.id.recyclerViewHome);
@@ -144,19 +144,23 @@ public class TabOne extends android.support.v4.app.Fragment {
                     @Override
                     public void onResponse(Call<resulltFeatured> call, Response<resulltFeatured> response) {
                         if(response.isSuccessful()){
-                           if(isClean == true){
-                               apiUrlImage.clear();
-                           }
-                            apiUrlImage.addAll(response.body().getPhotto());
+                          try{
+                              if(isClean == true){
+                                  apiUrlImage.clear();
+                              }
+                              apiUrlImage.addAll(response.body().getPhotto());
 
-                            ApdapterHome.notifyDataSetChanged();
-                            swpiSwipeRefreshLayout.setRefreshing(false);
-                            progressBar.setVisibility(View.GONE);
-                            progressBarCenter.setVisibility(View.GONE);
-                            if(listIdImage.size() == 0){
-                                Drawable drawable = getResources().getDrawable(R.mipmap.no_result);
-                                frameLayout.setBackground(drawable);
-                            }
+                              ApdapterHome.notifyDataSetChanged();
+                              swpiSwipeRefreshLayout.setRefreshing(false);
+                              progressBar.setVisibility(View.GONE);
+                              progressBarCenter.setVisibility(View.GONE);
+                              if(listIdImage.size() == 0){
+                                  Drawable drawable = getResources().getDrawable(R.mipmap.no_result);
+                                  frameLayout.setBackground(drawable);
+                              }
+                          }catch (Exception e){
+
+                          }
                         }else{
                             swpiSwipeRefreshLayout.setRefreshing(false);
                             progressBarCenter.setVisibility(View.GONE);

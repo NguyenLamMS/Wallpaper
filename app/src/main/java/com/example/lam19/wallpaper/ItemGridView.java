@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -20,12 +22,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -48,6 +53,7 @@ import java.util.concurrent.ExecutionException;
 
 import am.appwise.components.ni.NoInternetDialog;
 import okhttp3.ResponseBody;
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,6 +68,13 @@ public class ItemGridView extends AppCompatActivity {
     Intent intent;
     Bitmap imageBitmapMedium;
     ZoomageView zoomImage;
+    Button btnCancel;
+    LinearLayout linearLayoutCell1;
+    LinearLayout linearLayoutCell2;
+    LinearLayout linearLayoutCell3;
+    GifImageView gifImageView;
+    FrameLayout frameLayout;
+    Internet internet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,42 +85,56 @@ public class ItemGridView extends AppCompatActivity {
         progressBarLoad.setVisibility(View.VISIBLE);
         zoomImage = findViewById(R.id.imageView);
         btnSetImage = (Button) findViewById(R.id.btnSetImage);
+        frameLayout = findViewById(R.id.frameLayoutItemGrid);
+        internet = new Internet();
         //check item đã có trong favarite hay chưa
         checkFavorite();
 
         noInternetDialog = new NoInternetDialog.Builder(this).setButtonColor(Color.parseColor("#fe3f80")).setDialogRadius((float) 50).setCancelable(true).build();
         intent = getIntent();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    progressBarLoad.setVisibility(View.VISIBLE);
-                    imageBitmapMedium = Glide.
-                            with(ItemGridView.this).
-                            asBitmap().
-                            load(intent.getStringExtra("image_portrait")).
-                            into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL).
-                            get();
-                   runOnUiThread(new Runnable() {
-                       @Override
-                       public void run() {
-                           zoomImage.setImageBitmap(imageBitmapMedium);
-                           progressBarLoad.setVisibility(View.GONE);
-                       }
-                   });
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                    Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
-                }
+        if(internet.isNetworkAvailable(ItemGridView.this)){
+            try{
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            progressBarLoad.setVisibility(View.VISIBLE);
+                            imageBitmapMedium = Glide.
+                                    with(ItemGridView.this).
+                                    asBitmap().
+                                    load(intent.getStringExtra("image_portrait")).
+                                    into(Target.SIZE_ORIGINAL,Target.SIZE_ORIGINAL).
+                                    get();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    zoomImage.setImageBitmap(imageBitmapMedium);
+                                    progressBarLoad.setVisibility(View.GONE);
+                                }
+                            });
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }).start();
+            }catch (Exception e){
+                Toast.makeText(ItemGridView.this, "Unknown error", Toast.LENGTH_LONG).show();
             }
-        }).start();
+        }else{
+            progressBarLoad.setVisibility(View.GONE);
+            Drawable drawable = getResources().getDrawable(R.mipmap.no_internet);
+            frameLayout.setBackground(drawable);
+        }
         btnSetImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showMyDialog(false);
+                if(internet.isNetworkAvailable(ItemGridView.this)){
+                    showDialog(false);
+                }
             }
         });
         //create button back
@@ -281,7 +308,9 @@ public class ItemGridView extends AppCompatActivity {
             onBackPressed();
         }
         if (item.getItemId() == R.id.btnDowload) {
-            showMyDialog(true);
+            if(internet.isNetworkAvailable(ItemGridView.this)){
+                showDialog(true);
+            }
         }
         if (item.getItemId() == R.id.btnHeart) {
             if (isHeart == false) {
@@ -377,6 +406,66 @@ public class ItemGridView extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    public void showDialog(final Boolean isDowload){
+        final AlertDialog dialog=new AlertDialog.Builder(this, R.style.CustomAlertDialog).create();
+        LayoutInflater inflater=(LayoutInflater)
+                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view=inflater.inflate(R.layout.custom_alert_dialog, null);
+        gifImageView = view.findViewById(R.id.head);
+        if(isDowload){
+            gifImageView.setImageResource(R.mipmap.download);
+        }
+        dialog.setView(view);
+        dialog.show();
+        btnCancel = view.findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        linearLayoutCell1 = view.findViewById(R.id.cell1);
+        linearLayoutCell1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearLayoutCell1.setBackgroundColor(getResources().getColor(R.color.primaryLightColorBlueGray));
+                dialog.dismiss();
+                if(isDowload){
+                    dowloadImageAndSave(intent.getStringExtra("image_original"));
+                }else{
+                    setWallpaper(intent.getStringExtra("image_original"));
+                }
+            }
+        });
+        linearLayoutCell2 = view.findViewById(R.id.cell2);
+        linearLayoutCell2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearLayoutCell2.setBackgroundColor(getResources().getColor(R.color.primaryLightColorBlueGray));
+                dialog.dismiss();
+                if(isDowload){
+                    dowloadImageAndSave(intent.getStringExtra("image_large"));
+                }else{
+                    setWallpaper(intent.getStringExtra("image_large"));
+                }
+            }
+        });
+        linearLayoutCell3 = view.findViewById(R.id.cell3);
+        linearLayoutCell3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearLayoutCell3.setBackgroundColor(getResources().getColor(R.color.primaryLightColorBlueGray));
+                dialog.dismiss();
+                if(isDowload){
+                    dowloadImageAndSave(intent.getStringExtra("image_portrait"));
+                }else{
+                    setWallpaper(intent.getStringExtra("image_portrait"));
+                }
+            }
+        });
     }
 
     @Override
