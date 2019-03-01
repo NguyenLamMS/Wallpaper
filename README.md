@@ -36,6 +36,8 @@
 <p>
     <img   width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Capture%2B_2019-02-28-21-02-41.png" alt="">
     <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-02-28-21-03-25.png" alt="">
+        <img   width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Capture%2B_2019-03-01-13-35-44.png" alt="">
+    <img  width="200px" height="350px" src="https://github.com/NguyenLamMS/Wallpaper/blob/master/Screenshots/Screenshot_2019-03-01-13-35-23.png" alt="">
 </p>
 <h2> Wallpaper </h2>
 App using api of </br>
